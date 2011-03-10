@@ -1,0 +1,16 @@
+
+                _____   _____                                       __           .__                     
+  ____   ____ _/ ____\_/ ____\ ____   ____        __  _  _______  _/  |_   ____  |  |__    ____ _______  
+_/ ___\ /  _ \\   __\ \   __\_/ __ \_/ __ \ ______\ \/ \/ /\__  \ \   __\_/ ___\ |  |  \ _/ __ \\_  __ \ 
+\  \___(  <_> )|  |    |  |  \  ___/\  ___//_____/ \     /  / __ \_|  |  \  \___ |   Y  \\  ___/ |  | \/ 
+ \___  >\____/ |__|    |__|   \___  >\___  >        \/\_/  (____  /|__|   \___  >|___|  / \___  >|__|    
+     \/                           \/     \/                     \/            \/      \/      \/         
+                                                                                                        
+
+coffee-watcher is a script that can watch a directory and recompile your .coffee scripts if they change.
+It's very useful for development - you basically don't need to think about recompiling your CoffeeScript files.
+
+It searches in a recursive manner so sub-directories are handled as well.
+
+For more info read:
+http://amix.github.com/coffee-watcher/

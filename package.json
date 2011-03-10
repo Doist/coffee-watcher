@@ -1,0 +1,26 @@
+{
+    "name":         "coffee-watcher",
+    "description":  "A script that can watch a directory and recompile your .coffee scripts if they change",
+    "keywords":     ["coffeescript", "reload", "watch", "recompile"],
+    "author":       "amix",
+    "version":      "1.0.0",
+    "licenses": [{
+        "type":       "MIT",
+        "url":        "http://opensource.org/licenses/mit-license.php"
+    }],
+
+    "engines": {
+        "node":       ">=0.2.0"
+    },
+
+    "directories": {
+        "lib" :       "./lib"
+    },
+
+    "main" :        "./lib/coffee-watcher",
+
+    "bin": {
+        "coffee-watcher":      "./bin/coffee-watcher"
+    }
+
+}
