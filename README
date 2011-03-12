@@ -1,4 +1,3 @@
-
                 _____   _____                                       __           .__                     
   ____   ____ _/ ____\_/ ____\ ____   ____        __  _  _______  _/  |_   ____  |  |__    ____ _______  
 _/ ___\ /  _ \\   __\ \   __\_/ __ \_/ __ \ ______\ \/ \/ /\__  \ \   __\_/ ___\ |  |  \ _/ __ \\_  __ \ 
@@ -12,5 +11,13 @@ It's very useful for development - you basically don't need to think about recom
 
 It searches in a recursive manner so sub-directories are handled as well.
 
-For more info read:
+To install coffee-watcher via npm simply do:
+$ sudo npm install coffee-watcher
+
+To use coffee-watcher simply do:
+$ coffee-watcher
+or
+$ coffee-watcher ~/Desktop/my_dir
+
+For more info read the documentation:
 http://amix.github.com/coffee-watcher/
