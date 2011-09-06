@@ -23,12 +23,13 @@
 # * [CoffeeScript](http://jashkenas.github.com/coffee-script/)
 
 
-# Searches through a directory structure for *.coffee files using `find`.
+# Searches through a directory structure for *.coffee files using `dir` on windows, otherwise `find`.
 # For each .coffee file it runs `compileIfNeeded` to compile the file if it's modified.
 findCoffeeFiles = (dir) ->
-    execute("find #{dir} -name '*.coffee' -print",
-           (error, stdout, stderr) ->
-               for file in stdout.split('\n')
+    execute(
+        if process.platform.toLowerCase().indexOf("win") is 0 then "dir \"#{dir}\\*.coffee\" /a:-d /b /s" else "find #{dir} -name '*.coffee' -print"
+      , (error, stdout, stderr) ->
+               for file in stdout.split(/[\r\n]+/)
                    compileIfNeeded file if file
     )
 
