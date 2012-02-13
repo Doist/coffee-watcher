@@ -19,5 +19,7 @@ $ coffee-watcher
 or
 $ coffee-watcher ~/Desktop/my_dir
 
-For more info read the documentation:
+By default it compiles **file.coffee** to **.coffee.file.js**
+
+For more info read:
 http://amix.github.com/coffee-watcher/

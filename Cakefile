@@ -11,7 +11,7 @@ task 'install', 'install the `coffee-watcher` command into /usr/local (or --pref
   lib  = base + '/lib/coffee-watcher'
   exec([
     'mkdir -p ' + lib
-    'cp -rf bin README resources vendor lib ' + lib
+    'cp -rf bin README resources lib ' + lib
     'ln -sf ' + lib + '/bin/coffee-watcher ' + base + '/bin/coffee-watcher'
   ].join(' && '), (err, stdout, stderr) ->
    if err then console.error stderr

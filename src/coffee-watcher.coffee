@@ -1,7 +1,7 @@
 # **coffee-watcher** is a script that can watch
 # a directory and recompile your [.coffee scripts](http://jashkenas.github.com/coffee-script/) if they change.
 # It's very useful for development - you basically don't need to think about
-# recompiling your CoffeeScript files.  Search is done in a recursive manner 
+# recompiling your CoffeeScript files.  Search is done in a recursive manner
 # so sub-directories are handled as well.
 #
 # Installing coffee-watcher is easy with [npm](http://npmjs.org/):
@@ -15,10 +15,10 @@
 # Run this to watch for changes in a specified directory:
 #
 #       coffee-watcher ~/Desktop/my_project
-#       
+#
 # coffee-watcher requires:
 #
-# * [node.js](http://nodejs.org/) 
+# * [node.js](http://nodejs.org/)
 # * [find](http://en.wikipedia.org/wiki/Find)
 # * [CoffeeScript](http://jashkenas.github.com/coffee-script/)
 
@@ -39,7 +39,7 @@ findCoffeeFiles = (dir) ->
 # When starting the script all files will be recompiled.
 WATCHED_FILES = {}
 compileIfNeeded = (file) ->
-    fs.stat(file, (err, stats) -> 
+    fs.stat(file, (err, stats) ->
         old_mtime = WATCHED_FILES[file]
         new_mtime = new Date(stats.mtime)
 
@@ -56,15 +56,19 @@ compileIfNeeded = (file) ->
     )
 
 
-# Compiles a file using `coffee -c`.
+# Compiles a file using `coffee -bp`.
 #
 # Compilation errors are printed out to stdout.
 compileCoffeeScript = (file) ->
-    execute("coffee -c #{ file }", (error, stdout, stderr) ->
+    execute("coffee -bp #{ file }", (error, stdout, stderr) ->
         if error isnt null
             console.log error.message
         else
-            console.log "Compiled #{ file }"
+            output_filename = file.replace(/([^\/\\]+)\.coffee/, '.coffee.$1.js')
+            fs.writeFile(output_filename, stdout.toString(), (err) ->
+                throw err if err
+                console.log "Compiled #{file} to #{output_filename}"
+            )
     )
 
 

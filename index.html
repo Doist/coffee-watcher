@@ -1,7 +1,7 @@
 <!DOCTYPE html>  <html> <head>   <title>coffee-watcher.coffee</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="resources/docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               coffee-watcher.coffee             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>               <p><strong>coffee-watcher</strong> is a script that can watch
 a directory and recompile your <a href="http://jashkenas.github.com/coffee-script/">.coffee scripts</a> if they change.
 It's very useful for development - you basically don't need to think about
-recompiling your CoffeeScript files.  Search is done in a recursive manner 
+recompiling your CoffeeScript files.  Search is done in a recursive manner
 so sub-directories are handled as well.</p>
 
 <p>Installing coffee-watcher is easy with <a href="http://npmjs.org/">npm</a>:</p>
@@ -22,7 +22,7 @@ so sub-directories are handled as well.</p>
 <p>coffee-watcher requires:</p>
 
 <ul>
-<li><a href="http://nodejs.org/">node.js</a> </li>
+<li><a href="http://nodejs.org/">node.js</a></li>
 <li><a href="http://en.wikipedia.org/wiki/Find">find</a></li>
 <li><a href="http://jashkenas.github.com/coffee-script/">CoffeeScript</a></li>
 </ul>             </td>             <td class="code">               <div class="highlight"><pre></pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <p>Searches through a directory structure for *.coffee files using <code>find</code>.
@@ -36,7 +36,7 @@ if a .coffee file is modified it recompiles it using compileCoffeeScript.</p>
 
 <p>When starting the script all files will be recompiled.</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="nv">WATCHED_FILES = </span><span class="p">{}</span>
 <span class="nv">compileIfNeeded = </span><span class="nf">(file) -&gt;</span>
-    <span class="nx">fs</span><span class="p">.</span><span class="nx">stat</span><span class="p">(</span><span class="nx">file</span><span class="p">,</span> <span class="nf">(err, stats) -&gt;</span> 
+    <span class="nx">fs</span><span class="p">.</span><span class="nx">stat</span><span class="p">(</span><span class="nx">file</span><span class="p">,</span> <span class="nf">(err, stats) -&gt;</span>
         <span class="nv">old_mtime = </span><span class="nx">WATCHED_FILES</span><span class="p">[</span><span class="nx">file</span><span class="p">]</span>
         <span class="nv">new_mtime = </span><span class="k">new</span> <span class="nb">Date</span><span class="p">(</span><span class="nx">stats</span><span class="p">.</span><span class="nx">mtime</span><span class="p">)</span>
 
@@ -53,11 +53,12 @@ if a .coffee file is modified it recompiles it using compileCoffeeScript.</p>
     <span class="p">)</span></pre></div>             </td>           </tr>                               <tr id="section-4">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-4">&#182;</a>               </div>               <p>Compiles a file using <code>coffee -c</code>.</p>
 
 <p>Compilation errors are printed out to stdout.</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="nv">compileCoffeeScript = </span><span class="nf">(file) -&gt;</span>
-    <span class="nx">execute</span><span class="p">(</span><span class="s2">&quot;coffee -c #{ file }&quot;</span><span class="p">,</span> <span class="nf">(error, stdout, stderr) -&gt;</span>
+    <span class="nx">execute</span><span class="p">(</span><span class="s2">&quot;coffee -bo #{ file }&quot;</span><span class="p">,</span> <span class="nf">(error, stdout, stderr) -&gt;</span>
         <span class="k">if</span> <span class="nx">error</span> <span class="o">isnt</span> <span class="kc">null</span>
             <span class="nx">console</span><span class="p">.</span><span class="nx">log</span> <span class="nx">error</span><span class="p">.</span><span class="nx">message</span>
         <span class="k">else</span>
-            <span class="nx">console</span><span class="p">.</span><span class="nx">log</span> <span class="s2">&quot;Compiled #{ file }&quot;</span>
+            <span class="nv">output_filename = </span><span class="nx">file</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="sr">/([^\/\\])+\.coffee/</span><span class="p">,</span> <span class="s1">&#39;.coffee.$1.js&#39;</span><span class="p">)</span>
+            <span class="nx">console</span><span class="p">.</span><span class="nx">log</span> <span class="s2">&quot;Compiled #{file} to #{output_filename}&quot;</span>
     <span class="p">)</span></pre></div>             </td>           </tr>                               <tr id="section-5">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-5">&#182;</a>               </div>               <p>Require external dependencies (only node.js for now)</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="nv">execute = </span><span class="nx">require</span><span class="p">(</span><span class="s1">&#39;child_process&#39;</span><span class="p">).</span><span class="nx">exec</span>
 <span class="nv">fs = </span><span class="nx">require</span><span class="p">(</span><span class="s1">&#39;fs&#39;</span><span class="p">)</span></pre></div>             </td>           </tr>                               <tr id="section-6">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-6">&#182;</a>               </div>               <p>Starts a poller that polls each second in a directory that's
 either by default the current working directory or a directory that's passed through process arguments.</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="nv">directoryPoll = </span><span class="o">-&gt;</span> <span class="nx">findCoffeeFiles</span><span class="p">(</span><span class="nx">process</span><span class="p">.</span><span class="nx">argv</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">or</span> <span class="s1">&#39;.&#39;</span><span class="p">)</span>
