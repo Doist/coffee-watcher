@@ -1,8 +1,17 @@
 # **coffee-watcher** is a script that can watch
-# a directory and recompile your [.coffee scripts](http://jashkenas.github.com/coffee-script/) if they change.
-# It's very useful for development - you basically don't need to think about
+# a directory and recompile your [.coffee scripts](http://coffeescript.org/) if they change.
+#
+# It's very useful for development as you don't need to think about
 # recompiling your CoffeeScript files.  Search is done in a recursive manner
 # so sub-directories are handled as well.
+#
+#     Usage:
+#       coffee-watcher -p [prefix] -d [directory]
+#
+#     Options:
+#       -d  Specify which directory to scan.                                                                              [default: "."]
+#       -p  Which prefix should the compiled files have? Default is script.coffee will be compiled to .coffee.script.js.  [default: ".coffee."]
+#       -h  Prints help                                                                                                   [boolean]
 #
 # Installing coffee-watcher is easy with [npm](http://npmjs.org/):
 #
@@ -14,23 +23,48 @@
 #
 # Run this to watch for changes in a specified directory:
 #
-#       coffee-watcher ~/Desktop/my_project
+#       coffee-watcher -d ~/Desktop/my_project
 #
 # coffee-watcher requires:
 #
 # * [node.js](http://nodejs.org/)
 # * [find](http://en.wikipedia.org/wiki/Find)
-# * [CoffeeScript](http://jashkenas.github.com/coffee-script/)
+# * [watcher_lib](https://github.com/amix/watcher_lib)
+# * [optimist](https://github.com/amix/optimist)
+
+
+# Specify the command line arguments for the script (using optimist)
+usage = "Watch a directory and recompile .coffee scripts if they change.\nUsage: coffee-watcher -p [prefix] -d [directory]."
+specs = require('optimist')
+        .usage(usage)
+
+        .default('d', '.')
+        .describe('d', 'Specify which directory to scan.')
+
+        .default('p', '.coffee.')
+        .describe('p', 'Which prefix should the compiled files have? Default is script.coffee will be compiled to .coffee.style.css.')
+
+        .boolean('h')
+        .describe('h', 'Prints help')
+
+
+# Handle the special -h case
+if specs.parse(process.argv).h
+    specs.showHelp()
+    process.exit()
+else
+    argv = specs.argv
+
+
+# Use `watcher-lib`, a library that abstracts away most of the implementation details.
+# This library also makes it possible to implement any watchers (see coffee-watcher for an example).
+watcher_lib = require 'watcher_lib'
 
 
 # Searches through a directory structure for *.coffee files using `find`.
 # For each .coffee file it runs `compileIfNeeded` to compile the file if it's modified.
 findCoffeeFiles = (dir) ->
-    execute("find #{dir} -name '*.coffee' -print",
-           (error, stdout, stderr) ->
-               for file in stdout.split('\n')
-                   compileIfNeeded file if file
-    )
+    watcher_lib.findFiles('*.coffee', dir, compileIfNeeded)
 
 
 # Keeps a track of modified times for .coffee files in a in-memory object,
@@ -39,46 +73,15 @@ findCoffeeFiles = (dir) ->
 # When starting the script all files will be recompiled.
 WATCHED_FILES = {}
 compileIfNeeded = (file) ->
-    fs.stat(file, (err, stats) ->
-        old_mtime = WATCHED_FILES[file]
-        new_mtime = new Date(stats.mtime)
-
-        if !old_mtime
-            should_compile = true
-        else if new_mtime > old_mtime
-            should_compile = true
-        else
-            should_compile = false
-
-        WATCHED_FILES[file] = new_mtime
-
-        compileCoffeeScript file if should_compile
-    )
+    watcher_lib.compileIfNeeded(WATCHED_FILES, file, compileCoffeeScript)
 
 
-# Compiles a file using `coffee -bp`.
-#
-# Compilation errors are printed out to stdout.
+# Compiles a file using `coffee -bp`. Compilation errors are printed out to stdout.
 compileCoffeeScript = (file) ->
-    execute("coffee -bp #{ file }", (error, stdout, stderr) ->
-        if error isnt null
-            console.log error.message
-        else
-            output_filename = file.replace(/([^\/\\]+)\.coffee/, '.coffee.$1.js')
-            fs.writeFile(output_filename, stdout.toString(), (err) ->
-                throw err if err
-                console.log "Compiled #{file} to #{output_filename}"
-            )
-    )
-
-
-# Require external dependencies (only node.js for now)
-execute = require('child_process').exec
-fs = require('fs')
+    fnGetOutputFile = (file) -> file.replace(/([^\/\\]+)\.coffee/, "#{argv.p}$1.js")
+    watcher_lib.compileFile("coffee -bp #{ file }", file, fnGetOutputFile)
 
 
 # Starts a poller that polls each second in a directory that's
 # either by default the current working directory or a directory that's passed through process arguments.
-directoryPoll = -> findCoffeeFiles(process.argv[0] or '.')
-directoryPoll()
-setInterval directoryPoll, 1000
+watcher_lib.startDirectoryPoll(argv.d, findCoffeeFiles)

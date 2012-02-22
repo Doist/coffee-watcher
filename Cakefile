@@ -20,7 +20,7 @@ task 'install', 'install the `coffee-watcher` command into /usr/local (or --pref
 task 'doc', 'rebuild the coffee-watcher documentation', ->
   exec([
     'docco src/coffee-watcher.coffee'
-    'sed "s/docco.css/resources\\/docco.css/" < docs/coffee-watcher.html > index.html'
+    'sed "s/docco.css/resources\\/docco.css/" < docs/coffee-watcher.html > Documentation.html'
     'rm -r docs'
   ].join(' && '), (err) ->
     throw err if err

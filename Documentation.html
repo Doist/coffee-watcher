@@ -1,0 +1,67 @@
+<!DOCTYPE html>  <html> <head>   <title>coffee-watcher.coffee</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="resources/docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               coffee-watcher.coffee             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>               <p><strong>coffee-watcher</strong> is a script that can watch
+a directory and recompile your <a href="http://coffeescript.org/">.coffee scripts</a> if they change.</p>
+
+<p>It's very useful for development as you don't need to think about
+recompiling your CoffeeScript files.  Search is done in a recursive manner
+so sub-directories are handled as well.</p>
+
+<pre><code>Usage:
+  coffee-watcher -p [prefix] -d [directory]
+
+Options:
+  -d  Specify which directory to scan.                                                                              [default: "."]
+  -p  Which prefix should the compiled files have? Default is script.coffee will be compiled to .coffee.script.js.  [default: ".coffee."]
+  -h  Prints help                                                                                                   [boolean]
+</code></pre>
+
+<p>Installing coffee-watcher is easy with <a href="http://npmjs.org/">npm</a>:</p>
+
+<pre><code>  sudo npm install coffee-watcher
+</code></pre>
+
+<p>Run this to watch for changes in the current working directory:</p>
+
+<pre><code>  coffee-watcher
+</code></pre>
+
+<p>Run this to watch for changes in a specified directory:</p>
+
+<pre><code>  coffee-watcher -d ~/Desktop/my_project
+</code></pre>
+
+<p>coffee-watcher requires:</p>
+
+<ul>
+<li><a href="http://nodejs.org/">node.js</a></li>
+<li><a href="http://en.wikipedia.org/wiki/Find">find</a></li>
+<li><a href="https://github.com/amix/watcher_lib">watcher_lib</a></li>
+<li><a href="https://github.com/amix/optimist">optimist</a></li>
+</ul>             </td>             <td class="code">               <div class="highlight"><pre></pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <p>Specify the command line arguments for the script (using optimist)</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="nv">usage = </span><span class="s2">&quot;Watch a directory and recompile .coffee scripts if they change.\nUsage: coffee-watcher -p [prefix] -d [directory].&quot;</span>
+<span class="nv">specs = </span><span class="nx">require</span><span class="p">(</span><span class="s1">&#39;optimist&#39;</span><span class="p">)</span>
+        <span class="p">.</span><span class="nx">usage</span><span class="p">(</span><span class="nx">usage</span><span class="p">)</span>
+
+        <span class="p">.</span><span class="nx">default</span><span class="p">(</span><span class="s1">&#39;d&#39;</span><span class="p">,</span> <span class="s1">&#39;.&#39;</span><span class="p">)</span>
+        <span class="p">.</span><span class="nx">describe</span><span class="p">(</span><span class="s1">&#39;d&#39;</span><span class="p">,</span> <span class="s1">&#39;Specify which directory to scan.&#39;</span><span class="p">)</span>
+
+        <span class="p">.</span><span class="nx">default</span><span class="p">(</span><span class="s1">&#39;p&#39;</span><span class="p">,</span> <span class="s1">&#39;.coffee.&#39;</span><span class="p">)</span>
+        <span class="p">.</span><span class="nx">describe</span><span class="p">(</span><span class="s1">&#39;p&#39;</span><span class="p">,</span> <span class="s1">&#39;Which prefix should the compiled files have? Default is script.coffee will be compiled to .coffee.style.css.&#39;</span><span class="p">)</span>
+
+        <span class="p">.</span><span class="nx">boolean</span><span class="p">(</span><span class="s1">&#39;h&#39;</span><span class="p">)</span>
+        <span class="p">.</span><span class="nx">describe</span><span class="p">(</span><span class="s1">&#39;h&#39;</span><span class="p">,</span> <span class="s1">&#39;Prints help&#39;</span><span class="p">)</span></pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <p>Handle the special -h case</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="k">if</span> <span class="nx">specs</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span><span class="nx">process</span><span class="p">.</span><span class="nx">argv</span><span class="p">).</span><span class="nx">h</span>
+    <span class="nx">specs</span><span class="p">.</span><span class="nx">showHelp</span><span class="p">()</span>
+    <span class="nx">process</span><span class="p">.</span><span class="nx">exit</span><span class="p">()</span>
+<span class="k">else</span>
+    <span class="nv">argv = </span><span class="nx">specs</span><span class="p">.</span><span class="nx">argv</span></pre></div>             </td>           </tr>                               <tr id="section-4">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-4">&#182;</a>               </div>               <p>Use <code>watcher-lib</code>, a library that abstracts away most of the implementation details.
+This library also makes it possible to implement any watchers (see coffee-watcher for an example).</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="nv">watcher_lib = </span><span class="nx">require</span> <span class="s1">&#39;watcher_lib&#39;</span></pre></div>             </td>           </tr>                               <tr id="section-5">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-5">&#182;</a>               </div>               <p>Searches through a directory structure for *.coffee files using <code>find</code>.
+For each .coffee file it runs <code>compileIfNeeded</code> to compile the file if it's modified.</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="nv">findCoffeeFiles = </span><span class="nf">(dir) -&gt;</span>
+    <span class="nx">watcher_lib</span><span class="p">.</span><span class="nx">findFiles</span><span class="p">(</span><span class="s1">&#39;*.coffee&#39;</span><span class="p">,</span> <span class="nx">dir</span><span class="p">,</span> <span class="nx">compileIfNeeded</span><span class="p">)</span></pre></div>             </td>           </tr>                               <tr id="section-6">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-6">&#182;</a>               </div>               <p>Keeps a track of modified times for .coffee files in a in-memory object,
+if a .coffee file is modified it recompiles it using compileCoffeeScript.</p>
+
+<p>When starting the script all files will be recompiled.</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="nv">WATCHED_FILES = </span><span class="p">{}</span>
+<span class="nv">compileIfNeeded = </span><span class="nf">(file) -&gt;</span>
+    <span class="nx">watcher_lib</span><span class="p">.</span><span class="nx">compileIfNeeded</span><span class="p">(</span><span class="nx">WATCHED_FILES</span><span class="p">,</span> <span class="nx">file</span><span class="p">,</span> <span class="nx">compileCoffeeScript</span><span class="p">)</span></pre></div>             </td>           </tr>                               <tr id="section-7">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-7">&#182;</a>               </div>               <p>Compiles a file using <code>coffee -bp</code>. Compilation errors are printed out to stdout.</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="nv">compileCoffeeScript = </span><span class="nf">(file) -&gt;</span>
+    <span class="nv">fnGetOutputFile = </span><span class="nf">(file) -&gt;</span> <span class="nx">file</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="sr">/([^\/\\]+)\.coffee/</span><span class="p">,</span> <span class="s2">&quot;#{argv.p}$1.js&quot;</span><span class="p">)</span>
+    <span class="nx">watcher_lib</span><span class="p">.</span><span class="nx">compileFile</span><span class="p">(</span><span class="s2">&quot;coffee -bp #{ file }&quot;</span><span class="p">,</span> <span class="nx">file</span><span class="p">,</span> <span class="nx">fnGetOutputFile</span><span class="p">)</span></pre></div>             </td>           </tr>                               <tr id="section-8">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-8">&#182;</a>               </div>               <p>Starts a poller that polls each second in a directory that's
+either by default the current working directory or a directory that's passed through process arguments.</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="nx">watcher_lib</span><span class="p">.</span><span class="nx">startDirectoryPoll</span><span class="p">(</span><span class="nx">argv</span><span class="p">.</span><span class="nx">d</span><span class="p">,</span> <span class="nx">findCoffeeFiles</span><span class="p">)</span>
+
+</pre></div>             </td>           </tr>                </tbody>     </table>   </div> </body> </html> 
