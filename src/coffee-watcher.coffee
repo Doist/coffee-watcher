@@ -39,26 +39,30 @@ usage = "Watch a directory and recompile .coffee scripts if they change.\nUsage:
 program = require('commander')
 
 program
-  .version('1.4.3')
+  .version('1.5.0')
   .usage(usage)
 
-  .option('-d, --directory',
-          'Specify which directory to scan. [Default: .]')
+  .option('-d, --directory <path>',
+          'Specify which directory to scan. [Default: .]',
+          '.')
 
-  .option('-p, --prefix [type]',
+  .option('-p, --prefix <type>',
           'Which prefix should the compiled files have? Default is script.coffee will be compiled to .coffee.style.js.')
+
+  .option('-n, --noprefix',
+          "Don't use a prefix. script.coffee will be compiled to script.js. Not the default option!")
 
   .parse(process.argv)
 
 # Set defaults
 program.directory = program.directory or '.'
 
-if program.prefix == undefined
+if program.prefix == undefined or program.prefix == true
     program.prefix = '.coffee.'
 
-# Support -p (no prefix option)
-else if program.prefix == true
+if program.noprefix
     program.prefix = ''
+
 
 # Use `watcher-lib`, a library that abstracts away most of the implementation details.
 # This library also makes it possible to implement any watchers (see coffee-watcher for an example).
