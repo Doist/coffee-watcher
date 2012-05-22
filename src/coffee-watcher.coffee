@@ -39,7 +39,7 @@ usage = "Watch a directory and recompile .coffee scripts if they change.\nUsage:
 program = require('commander')
 
 program
-  .version('1.4.2')
+  .version('1.4.3')
   .usage(usage)
 
   .option('-d, --directory',
