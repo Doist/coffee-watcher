@@ -3,7 +3,7 @@
     "description":  "A script that can watch a directory and recompile your .coffee scripts if they change",
     "keywords":     ["coffeescript", "reload", "watch", "recompile"],
     "author":       "amix",
-    "version":      "1.4.1",
+    "version":      "1.4.2",
     "licenses": [{
         "type":       "MIT",
         "url":        "http://opensource.org/licenses/mit-license.php"
