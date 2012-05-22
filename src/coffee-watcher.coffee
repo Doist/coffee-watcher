@@ -43,11 +43,10 @@ program
   .usage(usage)
 
   .option('-d, --directory <path>',
-          'Specify which directory to scan. [Default: .]',
-          '.')
+          'Specify which directory to scan. [Default: .]')
 
   .option('-p, --prefix <type>',
-          'Which prefix should the compiled files have? Default is script.coffee will be compiled to .coffee.style.js.')
+          'Which prefix should the compiled files have? Default is script.coffee will be compiled to .coffee.script.js.')
 
   .option('-n, --noprefix',
           "Don't use a prefix. script.coffee will be compiled to script.js. Not the default option!")
@@ -62,6 +61,9 @@ if program.prefix == undefined or program.prefix == true
 
 if program.noprefix
     program.prefix = ''
+
+# Print status info
+require('util').puts("Compiling files in `#{program.directory}`. The prefix is `#{program.prefix}`...")
 
 
 # Use `watcher-lib`, a library that abstracts away most of the implementation details.
