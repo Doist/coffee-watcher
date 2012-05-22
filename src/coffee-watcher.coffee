@@ -30,31 +30,29 @@
 # * [node.js](http://nodejs.org/)
 # * [find](http://en.wikipedia.org/wiki/Find)
 # * [watcher_lib](https://github.com/amix/watcher_lib)
-# * [optimist](https://github.com/amix/optimist)
+# * [commander.js](https://github.com/visionmedia/commander.js)
 
 
-# Specify the command line arguments for the script (using optimist)
+# Specify the command line arguments for the script (using commander)
 usage = "Watch a directory and recompile .coffee scripts if they change.\nUsage: coffee-watcher -p [prefix] -d [directory]."
-specs = require('optimist')
-        .usage(usage)
 
-        .default('d', '.')
-        .describe('d', 'Specify which directory to scan.')
+program = require('commander')
 
-        .default('p', '.coffee.')
-        .describe('p', 'Which prefix should the compiled files have? Default is script.coffee will be compiled to .coffee.style.css.')
+program
+  .version('1.4.0')
+  .usage(usage)
 
-        .boolean('h')
-        .describe('h', 'Prints help')
+  .option('-d, --directory',
+          'Specify which directory to scan. [Default: .]')
 
+  .option('-p, --prefix [type]',
+          'Which prefix should the compiled files have? Default is script.coffee will be compiled to .coffee.style.js.')
 
-# Handle the special -h case
-if specs.parse(process.argv).h
-    specs.showHelp()
-    process.exit()
-else
-    argv = specs.argv
+  .parse(process.argv)
 
+# set defaults
+program.directory = program.directory or '.'
+program.prefix = program.prefix or '.coffee.'
 
 # Use `watcher-lib`, a library that abstracts away most of the implementation details.
 # This library also makes it possible to implement any watchers (see coffee-watcher for an example).
@@ -78,10 +76,10 @@ compileIfNeeded = (file) ->
 
 # Compiles a file using `coffee -bp`. Compilation errors are printed out to stdout.
 compileCoffeeScript = (file) ->
-    fnGetOutputFile = (file) -> file.replace(/([^\/\\]+)\.coffee/, "#{argv.p}$1.js")
+    fnGetOutputFile = (file) -> file.replace(/([^\/\\]+)\.coffee/, "#{program.prefix}$1.js")
     watcher_lib.compileFile("coffee -bp #{ file }", file, fnGetOutputFile)
 
 
 # Starts a poller that polls each second in a directory that's
 # either by default the current working directory or a directory that's passed through process arguments.
-watcher_lib.startDirectoryPoll(argv.d, findCoffeeFiles)
+watcher_lib.startDirectoryPoll(program.directory, findCoffeeFiles)
