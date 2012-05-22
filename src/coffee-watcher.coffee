@@ -50,9 +50,15 @@ program
 
   .parse(process.argv)
 
-# set defaults
+# Set defaults
 program.directory = program.directory or '.'
-program.prefix = program.prefix or '.coffee.'
+
+if program.prefix == undefined
+    program.prefix = '.coffee.'
+
+# Support -p (no prefix option)
+else if program.prefix == true
+    program.prefix = ''
 
 # Use `watcher-lib`, a library that abstracts away most of the implementation details.
 # This library also makes it possible to implement any watchers (see coffee-watcher for an example).
