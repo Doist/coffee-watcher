@@ -7,6 +7,9 @@
     "licenses": [{
         "type":       "MIT",
         "url":        "http://opensource.org/licenses/mit-license.php"
+    "dependencies": {
+        "commander": "0.6.0"
+     }
     }],
 
     "engines": {
